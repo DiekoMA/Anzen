@@ -41,6 +41,7 @@ dependencies:
   flutter_lints: ^3.0.0
   sqflite: ^2.3.0
   local_auth: ^2.1.7
+  pattern_lock: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

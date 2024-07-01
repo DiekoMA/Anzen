@@ -49,7 +49,7 @@ CREATE TABLE mainvault (
     });
   }
 
-  Future<int> updatePassword(VaultItem vaultItem) async {
+  Future<int> updateVaultItem(VaultItem vaultItem) async {
     final db = await instance.database;
     return await db.update(
       'mainvault',

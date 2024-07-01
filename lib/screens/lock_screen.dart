@@ -33,17 +33,24 @@ class _LockScreenState extends State<LockScreen> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             const Text(
+              'Anzen',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            const Text(
               'Please enter your password to unlock the vault.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
             ),
+            const SizedBox(height: 16),
             TextField(
               obscureText: obscurePassword,
               controller: passwordTextFieldController,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 prefixIcon: const Icon(Icons.password),
                 suffixIcon: IconButton(
@@ -59,41 +66,74 @@ class _LockScreenState extends State<LockScreen> {
                 label: const Text('Vault Password'),
               ),
             ),
-            OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-                onPressed: () async {
-                  bool isPasswordCorrect = await verifyMasterPassword(
-                      passwordTextFieldController.text);
-                  bool isDecoyPassword = await verifyDecoyPassword(
-                      passwordTextFieldController.text);
-                  if (isPasswordCorrect) {
-                    try {
+            const SizedBox(height: 16),
+            Wrap(
+              direction: Axis.horizontal,
+              spacing: 20.0,
+              runSpacing: 20.0,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  onPressed: () async {
+                    bool isPasswordCorrect = await verifyMasterPassword(
+                        passwordTextFieldController.text);
+                    bool isDecoyPassword = await verifyDecoyPassword(
+                        passwordTextFieldController.text);
+                    if (isPasswordCorrect) {
+                      try {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DashboardScreen(),
+                          ),
+                        );
+                      } catch (e) {
+                        SnackBar snackBar =
+                            SnackBar(content: Text(e.toString()));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    } else if (isDecoyPassword) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const DashboardScreen(),
+                          builder: (context) => const Decoyscreen(),
                         ),
                       );
-                    } catch (e) {
-                      SnackBar snackBar = SnackBar(content: Text(e.toString()));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    } else {
+                      var errorSnackbar = SnackBar(
+                        clipBehavior: Clip.antiAlias,
+                        behavior: SnackBarBehavior.floating,
+                        width: 350,
+                        action:
+                            SnackBarAction(label: ('label'), onPressed: () {}),
+                        content: const Text('Incorrect Password'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(errorSnackbar);
                     }
-                  } else if (isDecoyPassword) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Decoyscreen(),
-                      ),
-                    );
-                  }
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [Icon(Icons.lock), Text('Unlock')],
-                ))
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [Icon(Icons.lock), Text('Unlock')],
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [Icon(Icons.restore), Text('Reset')],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       )),
