@@ -1,8 +1,6 @@
-import 'package:anzen/customwidgets/PasswordBox.dart';
 import 'package:anzen/models/vaultitem.dart';
 import 'package:anzen/utils/databaseManager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Itemdetailspage extends StatefulWidget {
   final VaultItem vaultItemDetails;
@@ -17,6 +15,7 @@ class Itemdetailspage extends StatefulWidget {
 class _ItemdetailspageState extends State<Itemdetailspage> {
   TextEditingController usernameTextEditingController = TextEditingController();
   TextEditingController passwordTextEditingController = TextEditingController();
+  TextEditingController websiteTextEditingController = TextEditingController();
   TextEditingController notesTextEditingController = TextEditingController();
 
   bool editMode = false;
@@ -28,6 +27,7 @@ class _ItemdetailspageState extends State<Itemdetailspage> {
     vaultItemInfo = widget.vaultItemDetails;
     usernameTextEditingController.text = widget.vaultItemDetails.title;
     passwordTextEditingController.text = widget.vaultItemDetails.password;
+    websiteTextEditingController.text = widget.vaultItemDetails.website!;
     notesTextEditingController.text = widget.vaultItemDetails.notes!;
   }
 
@@ -36,16 +36,6 @@ class _ItemdetailspageState extends State<Itemdetailspage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(vaultItemInfo!.title),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.star_outline),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.delete),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -58,35 +48,38 @@ class _ItemdetailspageState extends State<Itemdetailspage> {
                 title: const Text('Username'),
                 leading: const Icon(Icons.alternate_email),
                 subtitle: TextField(
+                  enabled: editMode,
                   controller: usernameTextEditingController,
-                  decoration: InputDecoration(
-                    enabled: editMode,
-                    border: const OutlineInputBorder(),
-                  ),
                 ),
               ),
             ),
-            // Card(
-            //   child: ListTile(
-            //     leading: const Icon(Icons.password),
-            //     subtitle: Passwordbox(
-            //       enabled: editMode,
-            //       title: 'Password',
-            //       borderRadius: 8,
-            //       textEditingController: passwordTextEditingController,
-            //     ),
-            //   ),
-            // ),
+            Card(
+              child: ListTile(
+                title: const Text('Password'),
+                leading: const Icon(Icons.password),
+                subtitle: TextField(
+                  enabled: editMode,
+                  controller: passwordTextEditingController,
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: const Text('Website'),
+                leading: const Icon(Icons.web),
+                subtitle: TextField(
+                  enabled: editMode,
+                  controller: websiteTextEditingController,
+                ),
+              ),
+            ),
             Card(
               child: ListTile(
                 title: const Text('Notes'),
                 leading: const Icon(Icons.note),
                 subtitle: TextField(
                   controller: notesTextEditingController,
-                  decoration: InputDecoration(
-                    enabled: editMode,
-                    border: const OutlineInputBorder(),
-                  ),
+                  enabled: editMode,
                   onChanged: (value) {
                     setState(() {
                       // widget.vaultItemDetails.password = value;

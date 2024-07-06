@@ -49,9 +49,9 @@ class _LockScreenState extends State<LockScreen> {
               controller: passwordTextFieldController,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
+                // border: const OutlineInputBorder(
+                //   borderRadius: BorderRadius.all(Radius.circular(8)),
+                // ),
                 prefixIcon: const Icon(Icons.password),
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -67,14 +67,22 @@ class _LockScreenState extends State<LockScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 20.0,
-              runSpacing: 20.0,
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                OutlinedButton(
+                TextButton(
+                  style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  onPressed: () {},
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [Icon(Icons.restore), Text('Reset')],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
                   style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8))),
@@ -120,18 +128,7 @@ class _LockScreenState extends State<LockScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: [Icon(Icons.lock), Text('Unlock')],
                   ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8))),
-                  onPressed: () {},
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [Icon(Icons.restore), Text('Reset')],
-                  ),
-                ),
+                )
               ],
             ),
           ],

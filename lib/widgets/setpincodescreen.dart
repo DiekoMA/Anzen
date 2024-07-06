@@ -1,17 +1,15 @@
-import 'dart:ffi';
-
 import 'package:anzen/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Setpincodedialog extends StatefulWidget {
-  const Setpincodedialog({super.key});
+class Setpincodescreen extends StatefulWidget {
+  const Setpincodescreen({super.key});
 
   @override
-  State<Setpincodedialog> createState() => _SetpincodedialogState();
+  State<Setpincodescreen> createState() => _SetpincodescreenState();
 }
 
-class _SetpincodedialogState extends State<Setpincodedialog> {
+class _SetpincodescreenState extends State<Setpincodescreen> {
   String? pin;
   bool empty = true;
   TextEditingController pinEditingController = TextEditingController();
@@ -20,7 +18,7 @@ class _SetpincodedialogState extends State<Setpincodedialog> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('New Pin'),
+          title: const Text('Set a pin for your vault (Optional)'),
         ),
         body: Center(
           child: Stack(

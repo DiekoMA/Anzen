@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="anzen"
+        android:label="Anzen"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

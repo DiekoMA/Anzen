@@ -1,4 +1,6 @@
-import 'package:anzen/screens/set_lockscreen.dart';
+import 'package:anzen/screens/dashboard_screen.dart';
+import 'package:anzen/screens/onboarding/onboardingscreen.dart';
+import 'package:anzen/screens/onboarding/setmasterpasswordscreen.dart';
 import 'package:anzen/screens/lock_screen.dart';
 import 'package:anzen/utils/sharedPreferencesHelper.dart';
 import 'package:flutter/material.dart';
@@ -51,9 +53,9 @@ class MyApp extends StatelessWidget {
               );
             } else {
               if (snapshot.data == true) {
-                return const LockScreen();
+                return const DashboardScreen();
               } else {
-                return const SetLockscreen();
+                return const SetMasterPasswordScreen();
               }
             }
           },

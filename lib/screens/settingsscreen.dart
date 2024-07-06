@@ -1,8 +1,7 @@
-import 'package:anzen/customwidgets/PasswordBox.dart';
-import 'package:anzen/screens/set_lockscreen.dart';
+import 'package:anzen/screens/onboarding/setmasterpasswordscreen.dart';
 import 'package:anzen/utils/sharedPreferencesHelper.dart';
-import 'package:anzen/widgets/setPatternDialog.dart';
-import 'package:anzen/widgets/setPinCodeDialog.dart';
+import 'package:anzen/widgets/setpatternscreen.dart';
+import 'package:anzen/widgets/setpincodescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:anzen/main.dart';
 
@@ -36,6 +35,16 @@ class _SettingsscreenState extends State<Settingsscreen> {
       ),
       body: ListView(
         children: [
+          const ListTile(
+            dense: true,
+            enabled: false,
+            title: Text(
+              'Security',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            leading: Icon(Icons.security),
+          ),
+          const Divider(),
           // Setting tiles for various options
           ListTile(
             leading: const Icon(Icons.lock_clock),
@@ -286,7 +295,7 @@ class _SettingsscreenState extends State<Settingsscreen> {
                 MaterialPageRoute<void>(
                   fullscreenDialog: true,
                   builder: (BuildContext context) {
-                    return const Setpatterndialog();
+                    return const Setpatternscreen();
                   },
                 ),
               );
@@ -310,11 +319,22 @@ class _SettingsscreenState extends State<Settingsscreen> {
                 MaterialPageRoute<void>(
                   fullscreenDialog: true,
                   builder: (BuildContext context) {
-                    return const Setpincodedialog();
+                    return const Setpincodescreen();
                   },
                 ),
               );
             },
+          ),
+          const SizedBox(height: 12),
+          const Divider(),
+          const ListTile(
+            dense: true,
+            enabled: false,
+            title: Text(
+              'Customization',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            leading: Icon(Icons.palette),
           ),
         ],
       ),
