@@ -5,6 +5,7 @@ import 'package:anzen/screens/settingsscreen.dart';
 import 'package:anzen/screens/vaultsecurityscreen.dart';
 import 'package:anzen/utils/databaseManager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -66,6 +67,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label: Text('Search vault'),
                   ),
                   canRequestFocus: true,
+                  onChanged: searchVault,
                 ),
               ),
               actions: [
@@ -86,39 +88,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
             retrieveVaultContents();
           });
         },
-        child: ListView.builder(
-          itemCount: vaultContents.length,
-          itemBuilder: (BuildContext context, int index) {
-            final vaultItem = vaultContents[index];
-            var siteUrl = vaultItem.website?.toLowerCase();
-            return Card(
-              child: ListTile(
-                leading: const Icon(Icons.password),
-                title: Text(vaultItem.title),
-                subtitle: Text(vaultItem.username),
-                onLongPress: () {
-                  setState(() {
-                    editMode = true;
-                    if (selectedIndexes.contains(index)) {
-                      selectedIndexes.remove(index);
-                    } else {
-                      selectedIndexes.add(index);
-                    }
-                  });
-                },
-                selected: selectedIndexes.contains(index),
-                selectedTileColor: Colors.blue.withOpacity(0.5),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) =>
-                              Itemdetailspage(vaultItemDetails: vaultItem))));
+        child: vaultContents.isEmpty
+            ? const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('You have no Passwords saved.'),
+                    Text('-_-'),
+                  ],
+                ),
+              )
+            : ListView.builder(
+                itemCount: vaultContents.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final vaultItem = vaultContents[index];
+                  var siteUrl = vaultItem.website?.toLowerCase();
+                  return Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.password),
+                      title: Text(vaultItem.title),
+                      subtitle: Text(vaultItem.username),
+                      onLongPress: () {
+                        setState(() {
+                          editMode = true;
+                          if (selectedIndexes.contains(index)) {
+                            selectedIndexes.remove(index);
+                          } else {
+                            selectedIndexes.add(index);
+                          }
+                        });
+                      },
+                      selected: selectedIndexes.contains(index),
+                      selectedTileColor: Colors.blue.withOpacity(0.5),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => Itemdetailspage(
+                                    vaultItemDetails: vaultItem))));
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
-        ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -199,7 +211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ))
                     ],
                   ),
-                  body: Form(
+                  body: FormBuilder(
                     key: _formKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Padding(
@@ -207,9 +219,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: 12),
-                          TextFormField(
+                          FormBuilderTextField(
+                            name: 'entryTitle',
                             decoration: const InputDecoration(
-                              label: Text('Entry Title'),
+                              label: Text('Title'),
                               icon: Icon(Icons.title),
                             ),
                             validator: (value) {
@@ -219,11 +232,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               return null;
                             },
                             onChanged: (value) {
-                              _title = value;
+                              _title = value!;
                             },
                           ),
                           const SizedBox(height: 12),
-                          TextFormField(
+                          FormBuilderTextField(
+                            name: 'entryEmail',
                             decoration: const InputDecoration(
                                 label: Text('Email/Username'),
                                 icon: Icon(Icons.email)),
@@ -234,11 +248,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               return null;
                             },
                             onChanged: (value) {
-                              _email = value;
+                              _email = value!;
                             },
                           ),
                           const SizedBox(height: 12),
-                          TextFormField(
+                          FormBuilderTextField(
+                            name: 'entryPassword',
                             obscureText: obscurePassword,
                             decoration: InputDecoration(
                                 label: const Text('Password'),
@@ -260,25 +275,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               return null;
                             },
                             onChanged: (value) {
-                              _password = value;
+                              _password = value!;
                             },
                           ),
                           const SizedBox(height: 12),
-                          TextFormField(
+                          FormBuilderTextField(
+                            name: 'entryWebsite',
                             decoration: const InputDecoration(
                                 label: Text('Website'), icon: Icon(Icons.web)),
                             onChanged: (value) {
-                              _website = value;
+                              _website = value!;
                             },
                           ),
                           const SizedBox(height: 12),
-                          TextFormField(
+                          FormBuilderTextField(
+                            name: 'entryNote',
                             decoration: InputDecoration(
-                                label: const Text('TOTP'),
+                                label: const Text('Notes'),
                                 suffix: IconButton(
                                     onPressed: () {},
                                     icon: const Icon(Icons.more_vert)),
                                 icon: const Icon(Icons.lock_clock)),
+                            onChanged: (value) {
+                              _notes = value!;
+                            },
                             // onSaved: (value) {
                             //   _totp = value!;
                             // },
@@ -344,5 +364,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
     );
+  }
+
+  void searchVault(String query) {
+    final suggestions = vaultContents.where((vaultItem) {
+      final title = vaultItem.title.toLowerCase();
+      final input = query.toLowerCase();
+
+      return title.contains(input);
+    }).toList();
+
+    setState(() {
+      vaultContents = suggestions;
+    });
   }
 }

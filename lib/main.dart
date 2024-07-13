@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
               );
             } else {
               if (snapshot.data == true) {
-                return const DashboardScreen();
+                return const LockScreen();
               } else {
                 return const SetMasterPasswordScreen();
               }

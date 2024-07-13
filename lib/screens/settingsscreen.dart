@@ -336,6 +336,25 @@ class _SettingsscreenState extends State<Settingsscreen> {
             ),
             leading: Icon(Icons.palette),
           ),
+          ListTile(
+            leading: const Icon(Icons.delete),
+            title: const Text('Custom theme'),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Custom Theme'),
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
     );
@@ -346,6 +365,5 @@ Future<void> setDecoyPassword(String password) async {
   await secureStorage.write(
       key: 'decoy_vault_master_password', value: password);
 }
-
 
 /// Wow you found this, idk what you're doing down here unless you're looking for this function but O_O

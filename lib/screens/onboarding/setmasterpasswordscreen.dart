@@ -1,7 +1,6 @@
 import 'package:anzen/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:anzen/main.dart';
-import 'package:kdbx/kdbx.dart';
 
 class SetMasterPasswordScreen extends StatefulWidget {
   const SetMasterPasswordScreen({super.key});
