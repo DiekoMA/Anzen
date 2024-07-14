@@ -1,9 +1,12 @@
 import 'package:anzen/models/vaultitem.dart';
 import 'package:anzen/screens/itemdetailspage.dart';
 import 'package:anzen/screens/lock_screen.dart';
+import 'package:anzen/screens/new_vaultitem_screen.dart';
+import 'package:anzen/screens/password_generator_screen.dart';
 import 'package:anzen/screens/settingsscreen.dart';
 import 'package:anzen/screens/vaultsecurityscreen.dart';
 import 'package:anzen/utils/databaseManager.dart';
+import 'package:anzen/widgets/new_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -16,15 +19,10 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   List<VaultItem> vaultContents = [];
+
   TextEditingController searchController = TextEditingController();
-  bool obscurePassword = true;
+
   bool editMode = false;
-  final _formKey = GlobalKey<FormState>();
-  String _title = '';
-  String _email = '';
-  String _password = '';
-  String _website = '';
-  String _notes = '';
 
   @override
   void initState() {
@@ -144,7 +142,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                   icon: const Icon(Icons.settings)),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.password)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PasswordGeneratorScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.password)),
               IconButton(
                   onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
@@ -161,206 +167,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   icon: const Icon(Icons.lock)),
             ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
               fullscreenDialog: true,
               builder: (BuildContext context) {
-                return Scaffold(
-                  resizeToAvoidBottomInset: true,
-                  appBar: AppBar(
-                    title: const Text('New Item'),
-                    leading: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                    actions: [
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    try {
-                                      final vaultItem = VaultItem(
-                                        title: _title,
-                                        username: _email,
-                                        password: _password,
-                                        website: _website,
-                                        notes: _notes,
-                                      );
-                                      DatabaseManager.instance
-                                          .insertVaultItem(vaultItem);
-                                      Navigator.of(context).pop();
-                                      retrieveVaultContents();
-                                    } catch (e) {
-                                      var errorSnackbar =
-                                          SnackBar(content: Text(e.toString()));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(errorSnackbar);
-                                    }
-                                  }
-                                },
-                                icon: const Icon(Icons.save),
-                              ),
-                            ],
-                          ))
-                    ],
-                  ),
-                  body: FormBuilder(
-                    key: _formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 12),
-                          FormBuilderTextField(
-                            name: 'entryTitle',
-                            decoration: const InputDecoration(
-                              label: Text('Title'),
-                              icon: Icon(Icons.title),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              _title = value!;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          FormBuilderTextField(
-                            name: 'entryEmail',
-                            decoration: const InputDecoration(
-                                label: Text('Email/Username'),
-                                icon: Icon(Icons.email)),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              _email = value!;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          FormBuilderTextField(
-                            name: 'entryPassword',
-                            obscureText: obscurePassword,
-                            decoration: InputDecoration(
-                                label: const Text('Password'),
-                                suffix: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      obscurePassword = !obscurePassword;
-                                    });
-                                  },
-                                  icon: obscurePassword
-                                      ? const Icon(Icons.visibility)
-                                      : const Icon(Icons.visibility_off),
-                                ),
-                                icon: const Icon(Icons.password)),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              _password = value!;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          FormBuilderTextField(
-                            name: 'entryWebsite',
-                            decoration: const InputDecoration(
-                                label: Text('Website'), icon: Icon(Icons.web)),
-                            onChanged: (value) {
-                              _website = value!;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          FormBuilderTextField(
-                            name: 'entryNote',
-                            decoration: InputDecoration(
-                                label: const Text('Notes'),
-                                suffix: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.more_vert)),
-                                icon: const Icon(Icons.lock_clock)),
-                            onChanged: (value) {
-                              _notes = value!;
-                            },
-                            // onSaved: (value) {
-                            //   _totp = value!;
-                            // },
-                          ),
-                          const SizedBox(height: 12),
-                          PopupMenuButton(
-                            onSelected: (value) {
-                              switch (value) {
-                                case 'TOTP':
-                                  var snackbar = const SnackBar(
-                                      content: Text('totp selected'));
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackbar);
-                                  break;
-                                default:
-                              }
-                            },
-                            itemBuilder: ((context) {
-                              return const [
-                                PopupMenuItem(
-                                  child: Text('TOTP'),
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Website'),
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Password'),
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Note'),
-                                ),
-                                PopupMenuItem(
-                                  child: Text('Custom'),
-                                ),
-                              ];
-                            }),
-                            child: const Icon(Icons.add),
-                          ),
-                          // Expanded(
-                          //   child: TextFormField(
-                          //     decoration: const InputDecoration(
-                          //         border: OutlineInputBorder(),
-                          //         label: Text('Notes'),
-                          //         icon: Icon(Icons.note)),
-                          //     expands: true,
-                          //     keyboardType: TextInputType.multiline,
-                          //     maxLines: null,
-                          //     onChanged: (value) {
-                          //       _notes = value;
-                          //     },
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                return const NewVaultitemScreen();
               },
             ),
           );
+          retrieveVaultContents();
         },
-        child: const Icon(Icons.add),
+        label: const Row(
+          children: [Icon(Icons.add), Text('New Item')],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
     );

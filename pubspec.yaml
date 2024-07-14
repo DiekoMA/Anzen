@@ -43,6 +43,8 @@ dependencies:
   local_auth: ^2.1.7
   pattern_lock: ^2.0.0
   flutter_form_builder: ^9.3.0
+  flutter_windowmanager: ^0.2.0
+  password_strength: ^0.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

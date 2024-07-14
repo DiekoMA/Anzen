@@ -4,6 +4,8 @@ import 'package:anzen/widgets/setpatternscreen.dart';
 import 'package:anzen/widgets/setpincodescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:anzen/main.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 class Settingsscreen extends StatefulWidget {
   const Settingsscreen({super.key});
@@ -21,6 +23,8 @@ class _SettingsscreenState extends State<Settingsscreen> {
   bool usePin = SharedPreferencesHelper().getBool("usepin") ?? false;
   bool bioAuth = SharedPreferencesHelper().getBool("bio") ?? false;
   bool secureMode = SharedPreferencesHelper().getBool("securemode") ?? false;
+  bool showPasswordStrength =
+      SharedPreferencesHelper().getBool("showpasswordstrength") ?? false;
   bool useDecoyPassword =
       SharedPreferencesHelper().getBool("usedecoy") ?? false;
 
@@ -182,12 +186,34 @@ class _SettingsscreenState extends State<Settingsscreen> {
           ),
           SwitchListTile(
             isThreeLine: false,
+            title: const Text('Show Password Strength'),
+            secondary: const Icon(Icons.security_rounded),
+            subtitle: const Text(
+                'Shows the paassword strength in the item details page.'),
+            value: showPasswordStrength,
+            onChanged: (newValue) {
+              setState(() {
+                showPasswordStrength = newValue;
+                SharedPreferencesHelper()
+                    .setBool("showpasswordstrength", newValue);
+              });
+            },
+          ),
+          SwitchListTile(
+            isThreeLine: false,
+            dense: true,
             title: const Text('Allow screenshots'),
             secondary: const Icon(Icons.screenshot),
             subtitle:
                 const Text('Allows screenshots to be captured in the app'),
             value: allowScreenshots,
-            onChanged: (newValue) {
+            onChanged: (newValue) async {
+              try {
+                await FlutterWindowManager.addFlags(
+                    FlutterWindowManager.FLAG_SECURE);
+              } on PlatformException catch (e) {
+                print("Error disabling screenshots on Android: ${e.message}");
+              }
               setState(() {
                 allowScreenshots = newValue;
                 SharedPreferencesHelper().setBool("screenshot", newValue);
@@ -325,36 +351,36 @@ class _SettingsscreenState extends State<Settingsscreen> {
               );
             },
           ),
-          const SizedBox(height: 12),
-          const Divider(),
-          const ListTile(
-            dense: true,
-            enabled: false,
-            title: Text(
-              'Customization',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            leading: Icon(Icons.palette),
-          ),
-          ListTile(
-            leading: const Icon(Icons.delete),
-            title: const Text('Custom theme'),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Custom Theme'),
-                    content: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+          // const SizedBox(height: 12),
+          // const Divider(),
+          // const ListTile(
+          //   dense: true,
+          //   enabled: false,
+          //   title: Text(
+          //     'Customization',
+          //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          //   ),
+          //   leading: Icon(Icons.palette),
+          // ),
+          // ListTile(
+          //   leading: const Icon(Icons.delete),
+          //   title: const Text('Custom theme'),
+          //   onTap: () {
+          //     showDialog(
+          //       context: context,
+          //       builder: (BuildContext context) {
+          //         return AlertDialog(
+          //           title: const Text('Custom Theme'),
+          //           content: Column(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             mainAxisSize: MainAxisSize.min,
+          //             children: [],
+          //           ),
+          //         );
+          //       },
+          //     );
+          //   },
+          // ),
         ],
       ),
     );
