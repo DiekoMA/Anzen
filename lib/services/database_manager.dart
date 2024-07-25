@@ -1,4 +1,5 @@
 import 'package:anzen/models/vaultitem.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -27,7 +28,7 @@ CREATE TABLE mainvault (
         title TEXT,
         username TEXT,
         password TEXT,
-        website TEXT,
+        url TEXT,
         notes TEXT,
         tags TEXT
       )

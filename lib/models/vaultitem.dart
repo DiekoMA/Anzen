@@ -3,21 +3,21 @@ class VaultItem {
   final String title;
   final String username;
   final String password;
-  final String? website;
+  final String? url;
   final String? notes;
   final Map<String, dynamic> extraFields;
   // final List<String>? tags;
 
-  VaultItem({
-    this.id,
-    required this.title,
-    required this.username,
-    required this.password,
-    required this.website,
-    this.notes,
-    this.extraFields = const {}
-    // this.tags,
-  });
+  VaultItem(
+      {this.id,
+      required this.title,
+      required this.username,
+      required this.password,
+      required this.url,
+      this.notes,
+      this.extraFields = const {}
+      // this.tags,
+      });
 
   Map<String, dynamic> toMap() {
     final map = {
@@ -25,7 +25,7 @@ class VaultItem {
       'title': title,
       'username': username,
       'password': password,
-      'website': website,
+      'url': url,
       'notes': notes,
     };
 
@@ -35,14 +35,15 @@ class VaultItem {
 
   factory VaultItem.fromMap(Map<String, dynamic> map) {
     final extraFields = Map<String, dynamic>.from(map);
-    extraFields.removeWhere((key, value) => ['id', 'title', 'username', 'password', 'website', 'notes'].contains(key));
+    extraFields.removeWhere((key, value) =>
+        ['id', 'title', 'username', 'password', 'url', 'notes'].contains(key));
 
     return VaultItem(
       id: map['id'],
       title: map['title'],
       username: map['username'],
       password: map['password'],
-      website: map['website'],
+      url: map['url'],
       notes: map['notes'],
       extraFields: extraFields,
       // tags: map['tags'] != null ? map['tags'].toString().split('4,') : null,

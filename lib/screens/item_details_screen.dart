@@ -1,5 +1,5 @@
 import 'package:anzen/models/vaultitem.dart';
-import 'package:anzen/utils/databaseManager.dart';
+import 'package:anzen/services/database_manager.dart';
 import 'package:flutter/material.dart';
 
 class Itemdetailspage extends StatefulWidget {
@@ -27,7 +27,7 @@ class _ItemdetailspageState extends State<Itemdetailspage> {
     vaultItemInfo = widget.vaultItemDetails;
     usernameTextEditingController.text = widget.vaultItemDetails.title;
     passwordTextEditingController.text = widget.vaultItemDetails.password;
-    websiteTextEditingController.text = widget.vaultItemDetails.website!;
+    websiteTextEditingController.text = widget.vaultItemDetails.url!;
     notesTextEditingController.text = widget.vaultItemDetails.notes!;
   }
 
@@ -90,7 +90,6 @@ class _ItemdetailspageState extends State<Itemdetailspage> {
                 ),
               ),
             ),
-            
             const Text('Created at 24/06/2024')
           ],
         ),

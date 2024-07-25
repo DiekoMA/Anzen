@@ -1,4 +1,5 @@
 import 'package:anzen/screens/dashboard_screen.dart';
+import 'package:anzen/services/shared_preferences_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:anzen/main.dart';
 
@@ -11,11 +12,15 @@ class SetMasterPasswordScreen extends StatefulWidget {
 }
 
 class _SetMasterPasswordScreenState extends State<SetMasterPasswordScreen> {
-  final TextEditingController vaultNameController = TextEditingController();
+  final TextEditingController securityPhraseController =
+      TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
+  bool useSecurityPhrase =
+      SharedPreferencesHelper().getBool("securityphraseactive") ?? false;
 
   bool obscurePassword = true;
   bool isLoading = false;
@@ -24,7 +29,7 @@ class _SetMasterPasswordScreenState extends State<SetMasterPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lets create your vault'),
+        title: const Text('Lets Create your vault'),
       ),
       body: Center(
           child: Padding(
@@ -75,6 +80,16 @@ class _SetMasterPasswordScreenState extends State<SetMasterPasswordScreen> {
                 ),
               ),
             ),
+            ExpansionTile(
+              title: const Text('Additional security'),
+              children: [
+                TextField(
+                  controller: securityPhraseController,
+                  decoration:
+                      const InputDecoration(label: Text('Security Phrase')),
+                )
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
@@ -93,8 +108,9 @@ class _SetMasterPasswordScreenState extends State<SetMasterPasswordScreen> {
                       content: Text('Vault Password succesfully set.'),
                     );
                     if (confirmPasswordController.text ==
-                        passwordController.text) {
-                      // setMasterPassword(passwordController.text);
+                            passwordController.text &&
+                        securityPhraseController.text.isNotEmpty) {
+                      setSecurityPhrase(securityPhraseController.text);
                       setMasterPassword(passwordController.text);
                       ScaffoldMessenger.of(context)
                           .showSnackBar(confirmationSnackbar);
@@ -129,4 +145,8 @@ class _SetMasterPasswordScreenState extends State<SetMasterPasswordScreen> {
 Future<void> setMasterPassword(String password) async {
   await secureStorage.write(
       key: 'primary_vault_master_password', value: password);
+}
+
+Future<void> setSecurityPhrase(String phrase) async {
+  await secureStorage.write(key: 'securityPhrase', value: phrase);
 }
